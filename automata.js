@@ -32,7 +32,7 @@
             assert(
                 left[0] === right[0] || left[1] === right[right.length - 1],
                 'Invalid production rule'
-            ):
+            );
         } else if (left.length === 3) {
             assert(
                 left[0] === right[0] && left[2] === right[right.length - 1],
@@ -50,18 +50,18 @@
      * Capable to generate context-sensitive-languaje strings
      * @constructor
      */
-    Automata.Turing = function () {
+    Automata.TuringGrammar = function () {
         this.rules = [];
     };
 
-    Automata.Turing.prototype = {
+    Automata.TuringGrammar.prototype = {
         /**
          * Adds a production rule
          * @param left {String} left part of the rule (aAb)
          * @param rigth {String} right part of the rule (aGb)
          */
         addRule: function (left, right) {
-            // @todo: Implement
+            this.rules.push(new TuringProdRule(left, right));
         },
         /**
          * Generates strings based on the inserted rules
@@ -69,7 +69,8 @@
          * @return {String}
          */
         generateString: function (length) {
-            // @todo: Implement
+            // @todo: Look for start symbol (S) and take one option.
+            // @todo: Replace by new string
         }
     };
 
