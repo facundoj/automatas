@@ -11,7 +11,7 @@
      * @param msg {String} Exception message
      */
     function assert (assertion, msg) {
-        if (!assertion) throw msg;
+        if (!assertion) throw (msg || 'Assertion failed');
     }
 
     /**
@@ -27,12 +27,23 @@
         );
 
         if (left.length === 1) {
-
+            // @todo: Cool... so?
         } else if (left.length === 2) {
-
+            assert(
+                left[0] === right[0] || left[1] === right[right.length - 1],
+                'Invalid production rule'
+            ):
         } else if (left.length === 3) {
-
+            assert(
+                left[0] === right[0] && left[2] === right[right.length - 1],
+                'Invalid production rule'
+            );
+        } else {
+            throw 'Invalid production rule';
         }
+
+        this.rightSide = right;
+        this.leftSide = left;
     };
 
     /**
