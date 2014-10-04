@@ -46,15 +46,21 @@
         this.leftSide = left;
     };
 
+    TuringProdRule.prototype = {
+        // @todo: Implement
+    };
+
     /**
      * Capable to generate context-sensitive-languaje strings
      * @constructor
      */
     Automata.TuringGrammar = function () {
         this.rules = [];
+        this.noTerminals = [];
     };
 
     Automata.TuringGrammar.prototype = {
+
         /**
          * Adds a production rule
          * @param left {String} left part of the rule (aAb)
@@ -63,6 +69,17 @@
         addRule: function (left, right) {
             this.rules.push(new TuringProdRule(left, right));
         },
+
+        /**
+         * Adds a no-terminal symbol to the array
+         * @param symbol {String}
+         */
+        addNoTerminal: function (symbol) {
+            assert(typeof symbol === 'string', 'Symbol must be a string');
+            assert(symbol.length === 1, 'Symbol must be a single character');
+            this.noTerminals.push(symbol);
+        },
+
         /**
          * Generates strings based on the inserted rules
          * @param length {Number} generated string length
