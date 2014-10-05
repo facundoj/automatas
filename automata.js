@@ -26,9 +26,7 @@
             "Invalid parameter"
         );
 
-        if (left.length === 1) {
-            // @todo: Cool... so?
-        } else if (left.length === 2) {
+        if (left.length === 2) {
             assert(
                 left[0] === right[0] || left[1] === right[right.length - 1],
                 'Invalid production rule'
@@ -38,7 +36,7 @@
                 left[0] === right[0] && left[2] === right[right.length - 1],
                 'Invalid production rule'
             );
-        } else {
+        } else if (left.length !== 1) {
             throw 'Invalid production rule';
         }
 
@@ -57,6 +55,7 @@
     Automata.TuringGrammar = function () {
         this.rules = [];
         this.noTerminals = [];
+        this.startSymbol = 'S';
     };
 
     Automata.TuringGrammar.prototype = {
@@ -78,6 +77,16 @@
             assert(typeof symbol === 'string', 'Symbol must be a string');
             assert(symbol.length === 1, 'Symbol must be a single character');
             this.noTerminals.push(symbol);
+        },
+
+        /**
+         * Sets the starting symbol. "S" by default
+         * @param symbol {String}
+         */
+        setStartSymbol: function (symbol) {
+            assert(typeof symbol === 'string', 'Symbol must be a string');
+            assert(symbol.length === 1, 'Symbol must be a single character');
+            this.startSymbol = symbol;
         },
 
         /**
