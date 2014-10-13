@@ -91,12 +91,19 @@
 
         /**
          * Generates strings based on the inserted rules
-         * @param length {Number} generated string length
          * @return {String}
          */
-        generateString: function (length) {
-            // @todo: Look for start symbol (S) and take one option.
+        generateString: function () {
+            // @todo: Look for start symbol and take one option.
             // @todo: Replace by new string
+            var i, length, rule;
+            for (i = 0, length = this.rules.length; i < length; i += 1) {
+                rule = this.rules[i];
+                if (rule.leftSide === this.startSymbol) {
+                    // Is starting symbol
+                    
+                }
+            }
         }
     };
 
