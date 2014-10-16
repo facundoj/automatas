@@ -1,6 +1,6 @@
 Automatas
 =========
 
-Libreria para testear Gramaticas. Hasta ahora soólo de Lenguajes Sensibles al Contexto.
+Libreria para testear Gramáticas. Hasta ahora sólo de Lenguajes Sensibles al Contexto.
 
 **Nota:** *Sólo funciona con Harmony activado. Estoy usando Sets*
