@@ -11,8 +11,20 @@
         <div id="page">
             <div class="container">
                 <h1>Gramática Sensible al Contexto</h1>
-                <div class="newProductionRule row">
+
+                <div class="noTerminals row">
                     <div class="col-md-9">
+                        <form class="form-inline">
+                            <label>Agregar no-terminal:</label>
+                            <input id="newNoTerminal" type="text" class="form-control">
+                            <button id="addNoTerminal" type="button" class="btn btn-primary">Agregar</button>
+                            <span>(<span id="noTerminalsList">S</span>)</span>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="newProductionRule row">
+                    <div class="col-md-6">
                         <form class="form-inline">
                             <input id="ruleLeft" type="text" class="prodRuleInput form-control" placeholder="γAβ">
                             <span>--></span>
@@ -21,6 +33,7 @@
                         </form>
                     </div>
                 </div>
+
                 <div class="productionRules row">
                     <div class="col-md-3">
                         <ul class="list-group">

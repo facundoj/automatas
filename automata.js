@@ -5,6 +5,8 @@
 (function (window) {
     var Automata = Automata || {};
 
+    const START_SYMBOL = 'S';
+
     /**
      * Validates and throws exception when not true
      * @param assertion {Boolean} To check
@@ -37,15 +39,21 @@
      * @param left {String} left part of the rule (aAb)
      * @param rigth {String} right part of the rule (aGb)
      */
-    var TuringProdRule = function (left, right) {
+    var TuringProdRule = function (left, right, noTerminals) {
         assert(
             typeof left === 'string' && typeof right === 'string',
             "Invalid parameter"
         );
 
-        if (left.length === 2) {
+        if (left.length === 1) {
+            assert(noTerminals.has(left[0]) || left[0] === START_SYMBOL, 'Invalid production rule');
+        } else if (left.length === 2) {
             assert(
                 left[0] === right[0] || left[1] === right[right.length - 1],
+                'Invalid production rule'
+            );
+            assert(
+                noTerminals.has(left[0]) || noTerminals.has(left[1]),
                 'Invalid production rule'
             );
         } else if (left.length === 3) {
@@ -53,16 +61,13 @@
                 left[0] === right[0] && left[2] === right[right.length - 1],
                 'Invalid production rule'
             );
-        } else if (left.length !== 1) {
+            assert(noTerminals.has(left[1]), 'Invalid production rule');
+        } else {
             throw 'Invalid production rule';
         }
 
         this.rightSide = right;
         this.leftSide = left;
-    };
-
-    TuringProdRule.prototype = {
-        // @todo: Implement
     };
 
     /**
@@ -71,8 +76,7 @@
      */
     Automata.TuringGrammar = function () {
         this.$$rules = Object.create(null);
-        this.$$noTerminals = [];
-        this.$$startSymbol = 'S';
+        this.$$noTerminals = new Set();
     };
 
     Automata.TuringGrammar.prototype = {
@@ -85,9 +89,23 @@
         addRule: function (left, right) {
             // The instantiation makes the necesary validations for the rule
             // @todo Replace instantiation by check only
-            var prodRule = new TuringProdRule(left, right);
+            var prodRule = new TuringProdRule(left, right, this.$$noTerminals);
             this.$$rules[left] = this.$$rules[left] || new Set();
             this.$$rules[left].add(right);
+        },
+
+        /**
+         * Removes a production rule
+         * @param left {String} left part of the rule (aAb)
+         * @param rigth {String} right part of the rule (aGb)
+         */
+        removeRule: function (left, right) {
+            var ruleGroup = this.$$rules[left];
+            if (ruleGroup.has(right)) {
+                ruleGroup.delete(right);
+                return true;
+            }
+            return false;
         },
 
         /**
@@ -97,17 +115,7 @@
         addNoTerminal: function (symbol) {
             assert(typeof symbol === 'string', 'Symbol must be a string');
             assert(symbol.length === 1, 'Symbol must be a single character');
-            this.$$noTerminals.push(symbol);
-        },
-
-        /**
-         * Sets the starting symbol. "S" by default
-         * @param symbol {String}
-         */
-        setStartSymbol: function (symbol) {
-            assert(typeof symbol === 'string', 'Symbol must be a string');
-            assert(symbol.length === 1, 'Symbol must be a single character');
-            this.$$startSymbol = symbol;
+            this.$$noTerminals.add(symbol);
         },
 
         /**
@@ -116,7 +124,7 @@
          */
         generateString: function () {
             var rules = this.$$rules,
-                startRules = rules[this.$$startSymbol],
+                startRules = rules[START_SYMBOL],
                 output = null,
                 symbol, foundCoincidence, newValue;
 
