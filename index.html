@@ -2,9 +2,46 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="main.css">
         <title>Automata</title>
     </head>
     <body>
+        <div id="page">
+            <div class="container">
+                <h1>Gramática Sensible al Contexto</h1>
+                <div class="newProductionRule row">
+                    <div class="col-md-9">
+                        <form class="form-inline">
+                            <input id="ruleLeft" type="text" class="prodRuleInput form-control" placeholder="γAβ">
+                            <span>--></span>
+                            <input id="ruleRight" type="text" class="prodRuleInput form-control" placeholder="γWβ">
+                            <button id="addRule" type="button" class="btn btn-primary">Agregar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="productionRules row">
+                    <div class="col-md-3">
+                        <ul class="list-group">
+                            <li class="noProdRules list-group-item">Nada</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-1">
+                        <button disabled id="generate" type="button" class="btn btn-primary">Generar</button>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="panel panel-default">
+                            <div id="result" class="panel-body"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="automata.js"></script>
+        <script src="main.js"></script>
     </body>
 </html>
