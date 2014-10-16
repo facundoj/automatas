@@ -15,6 +15,23 @@
     }
 
     /**
+     * Retrieves any value of the Set
+     * @param set {Set}
+     */
+    function getAny (set) {
+        var length = set.size,
+            it = set.values(),
+            randomNumber = Math.floor(Math.random() * length) + 1,
+            i, value;
+
+        for (i = 0; i < randomNumber; i+= 1) {
+            value = it.next().value
+        }
+
+        return value;
+    }
+
+    /**
      * Context-sensitive grammar production rule
      * @constructor
      * @param left {String} left part of the rule (aAb)
@@ -53,9 +70,9 @@
      * @constructor
      */
     Automata.TuringGrammar = function () {
-        this.rules = [];
-        this.noTerminals = [];
-        this.startSymbol = 'S';
+        this.$$rules = Object.create(null);
+        this.$$noTerminals = [];
+        this.$$startSymbol = 'S';
     };
 
     Automata.TuringGrammar.prototype = {
@@ -66,7 +83,11 @@
          * @param rigth {String} right part of the rule (aGb)
          */
         addRule: function (left, right) {
-            this.rules.push(new TuringProdRule(left, right));
+            // The instantiation makes the necesary validations for the rule
+            // @todo Replace instantiation by check only
+            var prodRule = new TuringProdRule(left, right);
+            this.$$rules[left] = this.$$rules[left] || new Set();
+            this.$$rules[left].add(right);
         },
 
         /**
@@ -76,7 +97,7 @@
         addNoTerminal: function (symbol) {
             assert(typeof symbol === 'string', 'Symbol must be a string');
             assert(symbol.length === 1, 'Symbol must be a single character');
-            this.noTerminals.push(symbol);
+            this.$$noTerminals.push(symbol);
         },
 
         /**
@@ -86,7 +107,7 @@
         setStartSymbol: function (symbol) {
             assert(typeof symbol === 'string', 'Symbol must be a string');
             assert(symbol.length === 1, 'Symbol must be a single character');
-            this.startSymbol = symbol;
+            this.$$startSymbol = symbol;
         },
 
         /**
@@ -94,16 +115,37 @@
          * @return {String}
          */
         generateString: function () {
-            // @todo: Look for start symbol and take one option.
-            // @todo: Replace by new string
-            var i, length, rule;
-            for (i = 0, length = this.rules.length; i < length; i += 1) {
-                rule = this.rules[i];
-                if (rule.leftSide === this.startSymbol) {
-                    // Is starting symbol
-                    
+            var rules = this.$$rules,
+                startRules = rules[this.$$startSymbol],
+                output = null,
+                symbol, foundCoincidence, newValue;
+
+            if (!!startRules) {
+                output = getAny(startRules);
+            }
+
+            if (typeof output === 'string') {
+                foundCoincidence = true;
+                while (foundCoincidence) {
+                    foundCoincidence = false;
+                    for (symbol in rules) {
+                        if (Object.prototype.hasOwnProperty.call(rules, symbol) &&
+                                typeof symbol === 'string' &&
+                                !foundCoincidence) {
+                            if (output.indexOf(symbol) !== -1) {
+                                newValue = getAny(rules[symbol]);
+                                console.log('Found %s in %s. Replacing by %s', symbol, output, newValue);
+                                output = output.replace(
+                                    symbol,
+                                    newValue
+                                );
+                                foundCoincidence = true;
+                            }
+                        }
+                    }
                 }
             }
+            return output;
         }
     };
 
