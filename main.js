@@ -1,12 +1,26 @@
 $(function () {
     var turingGrammar = new Automata.TuringGrammar();
 
+    var removeRule = function (event) {
+        var $minus = $(event.currentTarget),
+            rule = $minus.data('rule'), $rules;
+
+        turingGrammar.removeRule(rule[0], rule[1]);
+        $minus.closest('li').remove();
+
+        $rules = $('.productionRules li');
+        if ($rules.length === 1) {
+            $rules.show();
+            $('#generate').prop('disabled', true);
+        }
+    };
+
     $('#addRule').on('click', function () {
         var $leftSide = $('#ruleLeft'),
             $rightSide = $('#ruleRight'),
             leftSideText = $leftSide.val(),
             rightSideText = $rightSide.val(),
-            $newListItem;
+            $newListItem, $minusIcon;
 
         try {
             turingGrammar.addRule(leftSideText, rightSideText);
@@ -18,9 +32,17 @@ $(function () {
         $leftSide.val('');
         $rightSide.val('');
 
+        $minusIcon = $('<span></span>')
+            .addClass('glyphicon')
+            .addClass('glyphicon-minus')
+            .addClass('removeRule')
+            .data('rule', [leftSideText, rightSideText])
+            .on('click', removeRule);
+
         $newListItem = $('<li></li>')
             .addClass('list-group-item')
-            .text(leftSideText + ' --> ' + rightSideText);
+            .text(leftSideText + ' --> ' + rightSideText)
+            .append($minusIcon);
 
         $('.noProdRules').hide();
         $('.productionRules ul').append($newListItem);

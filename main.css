@@ -1,3 +1,8 @@
 .newProductionRule, .noTerminals {
     margin-bottom: 25px;
 }
+
+.removeRule {
+    float: right;
+    cursor: pointer;
+}
