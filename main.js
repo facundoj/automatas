@@ -1,31 +1,51 @@
 $(function () {
-    var turingGrammar = new Automata.TuringGrammar();
+    var turingGrammar = new Automata.TuringGrammar(),
 
-    var removeRule = function (event) {
-        var $minus = $(event.currentTarget),
-            rule = $minus.data('rule'), $rules;
+        // Cached buttons
+        $generateBtn = $('#generate'),
+        $addNoTerminalBtn = $('#addNoTerminal'),
+        $addRuleBtn = $('#addRule'),
+        // Cached production rules list
+        $prodRulesList = $('.productionRules ul'),
+        $noProdRulesItem = $('.noProdRules'),
+        // Cached text inputs
+        $leftSide = $('#ruleLeft'),
+        $rightSide = $('#ruleRight'),
+        $newSymbol = $('#newNoTerminal'),
+        // Cached inline texts
+        $result = $('#result'),
+        $noTerminalsList = $('#noTerminalsList'),
 
-        turingGrammar.removeRule(rule[0], rule[1]);
-        $minus.closest('li').remove();
+        /**
+         * Remove rule event handler
+         */
+        removeRule = function (event) {
+            var $minus = $(event.currentTarget),
+                rule = $minus.data('rule'),
+                $rules, $prodRulesListItems;
 
-        $rules = $('.productionRules li');
-        if ($rules.length === 1) {
-            $rules.show();
-            $('#generate').prop('disabled', true);
-        }
-    };
+            turingGrammar.removeRule(rule[0], rule[1]);
+            $minus.closest('li').remove();
 
-    $('#addRule').on('click', function () {
-        var $leftSide = $('#ruleLeft'),
-            $rightSide = $('#ruleRight'),
-            leftSideText = $leftSide.val(),
+            $prodRulesListItems = $prodRulesList.find('li');
+
+            if ($prodRulesListItems.length === 1) {
+                $noProdRulesItem.show();
+                $generateBtn.prop('disabled', true);
+            }
+        };
+
+    // Adds a production rule
+    $addRuleBtn.on('click', function () {
+        var leftSideText = $leftSide.val(),
             rightSideText = $rightSide.val(),
             $newListItem, $minusIcon;
 
         try {
             turingGrammar.addRule(leftSideText, rightSideText);
         } catch (ex) {
-            console.error('Invalid production rule');
+            console.error('Couldn\'t add the production rule.');
+            // @todo Add inline error
             return;
         }
 
@@ -44,21 +64,21 @@ $(function () {
             .text(leftSideText + ' --> ' + rightSideText)
             .append($minusIcon);
 
-        $('.noProdRules').hide();
-        $('.productionRules ul').append($newListItem);
-        $('#generate').prop('disabled', false);
+        $noProdRulesItem.hide();
+        $prodRulesList.append($newListItem);
+        $generateBtn.prop('disabled', false);
 
         $leftSide.focus();
     });
 
-    $('#generate').on('click', function () {
-        $('#result').text(turingGrammar.generateString());
+    // Generates new string of the languaje
+    $generateBtn.on('click', function () {
+        $result.text(turingGrammar.generateString());
     });
 
-    $('#addNoTerminal').on('click', function () {
-        var $newSymbol = $('#newNoTerminal'),
-            newSymbolText = $newSymbol.val(),
-            $noTerminalsList = $('#noTerminalsList');
+    // Adds a no-terminal symbol
+    $addNoTerminalBtn.on('click', function () {
+        var newSymbolText = $newSymbol.val();
 
         $newSymbol.val('');
         $newSymbol.focus();
