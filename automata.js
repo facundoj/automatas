@@ -1,5 +1,5 @@
 /**
- * Formal Languajes Utils
+ * Formal Languages Utils
  * @author facundoj
  */
 (function (window) {
